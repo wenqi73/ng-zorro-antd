@@ -1,1 +1,11 @@
-drawer works
+<div *ngIf="nzMask"
+  class="ant-modal-mask"
+  [ngClass]="maskAnimationClassMap"
+  [class.ant-modal-mask-hidden]="hidden"
+></div>
+<div #drawer 
+  class="ant-drawer-content-wrapper"
+  [style.transform]="transform"]
+>
+  <ng-content></ng-content>
+</div>
