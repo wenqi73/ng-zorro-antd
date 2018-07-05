@@ -16,6 +16,7 @@ import { NzCheckboxModule } from './checkbox/nz-checkbox.module';
 import { NzCollapseModule } from './collapse/nz-collapse.module';
 import { NzDatePickerModule } from './date-picker/date-picker.module';
 import { NzDividerModule } from './divider/nz-divider.module';
+import { NzDrawerModule } from './drawer/nz-drawer.module';
 import { NzDropDownModule } from './dropdown/nz-dropdown.module';
 import { NzFormModule } from './form/nz-form.module';
 import { NzGridModule } from './grid/nz-grid.module';
@@ -66,6 +67,7 @@ export * from './checkbox';
 export * from './collapse';
 export * from './date-picker';
 export * from './divider';
+export * from './drawer';
 export * from './dropdown';
 export * from './form';
 export * from './grid';
@@ -157,7 +159,8 @@ export * from './time-picker';
     NzCascaderModule,
     NzTreeModule,
     NzTreeSelectModule,
-    NzTimePickerModule
+    NzTimePickerModule,
+    NzDrawerModule
   ]
 })
 export class NgZorroAntdModule {
