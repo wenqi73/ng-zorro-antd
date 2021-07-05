@@ -3,6 +3,6 @@
  * found in the LICENSE file at https://github.com/NG-ZORRO/ng-zorro-antd/blob/master/LICENSE
  */
 
-export * from './candy-date';
+export * from './util';
 export * from './time';
 export { NgTimeParser as ɵNgTimeParser, TimeResult as ɵTimeResult } from './time-parser';

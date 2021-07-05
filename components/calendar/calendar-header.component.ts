@@ -14,7 +14,8 @@ import {
   ViewEncapsulation
 } from '@angular/core';
 
-import { CandyDate } from 'ng-zorro-antd/core/time';
+import { setMonth } from 'date-fns';
+
 import { DateHelperService, NzI18nService as I18n } from 'ng-zorro-antd/i18n';
 import { NzSelectSizeType } from 'ng-zorro-antd/select';
 
@@ -41,7 +42,7 @@ import { NzSelectSizeType } from 'ng-zorro-antd/select';
         [nzSize]="size"
         [nzDropdownMatchSelectWidth]="false"
         [ngModel]="activeMonth"
-        (ngModelChange)="monthChange.emit($event)"
+        (ngModelChange)="onMonthChange($event)"
       >
         <nz-option *ngFor="let month of months" [nzLabel]="month.label" [nzValue]="month.value"></nz-option>
       </nz-select>
@@ -49,7 +50,7 @@ import { NzSelectSizeType } from 'ng-zorro-antd/select';
       <nz-radio-group
         class="ant-picker-calendar-mode-switch"
         [(ngModel)]="mode"
-        (ngModelChange)="modeChange.emit($event)"
+        (ngModelChange)="onMonthChange($event)"
         [nzSize]="size"
       >
         <label nz-radio-button nzValue="month">{{ monthTypeText }}</label>
@@ -64,12 +65,11 @@ import { NzSelectSizeType } from 'ng-zorro-antd/select';
 export class NzCalendarHeaderComponent implements OnInit {
   @Input() mode: 'month' | 'year' = 'month';
   @Input() fullscreen: boolean = true;
-  @Input() activeDate: CandyDate = new CandyDate();
+  @Input() activeDate: Date = new Date();
 
   @Output() readonly modeChange: EventEmitter<'month' | 'year'> = new EventEmitter();
   @Output() readonly yearChange: EventEmitter<number> = new EventEmitter();
   @Output() readonly monthChange: EventEmitter<number> = new EventEmitter();
-  // @Output() readonly valueChange: EventEmitter<CandyDate> = new EventEmitter();
 
   yearOffset: number = 10;
   yearTotal: number = 20;
@@ -77,7 +77,7 @@ export class NzCalendarHeaderComponent implements OnInit {
   months: Array<{ label: string; value: number }> = [];
 
   get activeYear(): number {
-    return this.activeDate.getYear();
+    return this.activeDate.getFullYear();
   }
 
   get activeMonth(): number {
@@ -111,6 +111,10 @@ export class NzCalendarHeaderComponent implements OnInit {
     this.setUpYears(year);
   }
 
+  onMonthChange(value: 'month' | 'year'): void {
+    this.modeChange.emit(value);
+  }
+
   private setUpYears(year?: number): void {
     const start = (year || this.activeYear) - this.yearOffset;
     const end = start + this.yearTotal;
@@ -125,8 +129,8 @@ export class NzCalendarHeaderComponent implements OnInit {
     this.months = [];
 
     for (let i = 0; i < 12; i++) {
-      const dateInMonth = this.activeDate.setMonth(i);
-      const monthText = this.dateHelper.format(dateInMonth.nativeDate, 'MMM');
+      const dateInMonth = setMonth(this.activeDate, i);
+      const monthText = this.dateHelper.format(dateInMonth, 'MMM');
       this.months.push({ label: monthText, value: i });
     }
   }

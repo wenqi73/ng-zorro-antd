@@ -4,6 +4,7 @@
  */
 
 import { ChangeDetectionStrategy, Component, ViewEncapsulation } from '@angular/core';
+import { addYears } from 'date-fns';
 import { AbstractPanelHeader } from './abstract-panel-header';
 import { PanelSelector } from './interface';
 
@@ -16,7 +17,7 @@ import { PanelSelector } from './interface';
 })
 export class YearHeaderComponent extends AbstractPanelHeader {
   get startYear(): number {
-    return parseInt(`${this.value.getYear() / 10}`, 10) * 10;
+    return parseInt(`${this.value.getFullYear() / 10}`, 10) * 10;
   }
 
   get endYear(): number {
@@ -24,11 +25,11 @@ export class YearHeaderComponent extends AbstractPanelHeader {
   }
 
   superPrevious(): void {
-    this.changeValue(this.value.addYears(-10));
+    this.changeValue(addYears(this.value, -10));
   }
 
   superNext(): void {
-    this.changeValue(this.value.addYears(10));
+    this.changeValue(addYears(this.value, 10));
   }
 
   getSelectors(): PanelSelector[] {

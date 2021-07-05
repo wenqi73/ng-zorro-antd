@@ -17,11 +17,14 @@ import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzTimePickerModule } from 'ng-zorro-antd/time-picker';
 
 import { CalendarFooterComponent } from './calendar-footer.component';
+import { NzDatePickerContentComponent } from './date-picker-content.component';
+import { NzDatePickerPanelComponent } from './date-picker-panel.component';
 import { NzDatePickerComponent } from './date-picker.component';
-import { DateRangePopupComponent } from './date-range-popup.component';
-import { InnerPopupComponent } from './inner-popup.component';
+import { InnerPanelComponent } from './inner-panel.component';
 import { LibPackerModule } from './lib/lib-packer.module';
 import { NzMonthPickerComponent } from './month-picker.component';
+import { NzRangePickerContentComponent } from './range-picker-content.component';
+import { NzRangePickerPanelComponent } from './range-picker-panel.component';
 import { NzRangePickerComponent } from './range-picker.component';
 import { NzWeekPickerComponent } from './week-picker.component';
 import { NzYearPickerComponent } from './year-picker.component';
@@ -54,10 +57,12 @@ import { NzYearPickerComponent } from './year-picker.component';
     NzYearPickerComponent,
     NzWeekPickerComponent,
     NzRangePickerComponent,
-
+    NzDatePickerContentComponent,
+    NzDatePickerPanelComponent,
+    NzRangePickerContentComponent,
+    NzRangePickerPanelComponent,
     CalendarFooterComponent,
-    InnerPopupComponent,
-    DateRangePopupComponent
+    InnerPanelComponent
   ]
 })
 export class NzDatePickerModule {}

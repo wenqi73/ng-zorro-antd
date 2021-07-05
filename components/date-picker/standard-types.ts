@@ -11,11 +11,14 @@ export type DisabledTimePartial = 'start' | 'end';
 
 export type NzDateMode = 'decade' | 'year' | 'month' | 'week' | 'date' | 'time';
 
-export type RangePartType = 'left' | 'right';
+export enum RangePart {
+  Left,
+  Right
+}
 
 export type CompatibleDate = Date | Date[];
 
-export type DisabledTimeFn = (current: Date | Date[], partial?: DisabledTimePartial) => DisabledTimeConfig | undefined;
+export type DisabledTimeFn = (current: Date | null, partial?: DisabledTimePartial) => DisabledTimeConfig | undefined;
 
 export interface DisabledTimeConfig {
   nzDisabledHours(): number[];

@@ -6,7 +6,7 @@
 import { formatDate } from '@angular/common';
 import { Inject, Injectable, Injector, Optional } from '@angular/core';
 
-import { format as fnsFormat, getISOWeek as fnsGetISOWeek, parse as fnsParse } from 'date-fns';
+import { format as fnsFormat, getISOWeek as fnsGetISOWeek, isValid, parse as fnsParse } from 'date-fns';
 
 import { WeekDayIndex, ɵNgTimeParser } from 'ng-zorro-antd/core/time';
 
@@ -34,7 +34,7 @@ export abstract class DateHelperService {
 
   abstract getISOWeek(date: Date): number;
   abstract getFirstDayOfWeek(): WeekDayIndex;
-  abstract format(date: Date | null, formatStr: string): string;
+  abstract format(date: Date | null | undefined, formatStr: string): string;
   abstract parseDate(text: string, formatStr?: string): Date;
   abstract parseTime(text: string, formatStr?: string): Date | undefined;
 }
@@ -67,7 +67,7 @@ export class DateHelperByDateFns extends DateHelperService {
    * @param formatStr format string
    */
   format(date: Date, formatStr: string): string {
-    return date ? fnsFormat(date, formatStr, { locale: this.i18n.getDateLocale() }) : '';
+    return isValid(date) ? fnsFormat(date, formatStr, { locale: this.i18n.getDateLocale() }) : '';
   }
 
   parseDate(text: string, formatStr: string): Date {
@@ -102,7 +102,7 @@ export class DateHelperByDatePipe extends DateHelperService {
   }
 
   format(date: Date | null, formatStr: string): string {
-    return date ? formatDate(date, formatStr, this.i18n.getLocaleId())! : '';
+    return isValid(date) ? formatDate(date!, formatStr, this.i18n.getLocaleId())! : '';
   }
 
   parseDate(text: string): Date {

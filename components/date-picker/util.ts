@@ -3,8 +3,6 @@
  * found in the LICENSE file at https://github.com/NG-ZORRO/ng-zorro-antd/blob/master/LICENSE
  */
 
-import { CandyDate } from 'ng-zorro-antd/core/time';
-
 import { DisabledDateFn, DisabledTimeConfig, DisabledTimeFn } from './standard-types';
 
 export const PREFIX_CLASS = 'ant-picker';
@@ -21,8 +19,8 @@ const defaultDisabledTime: DisabledTimeConfig = {
   }
 };
 
-export function getTimeConfig(value: CandyDate, disabledTime?: DisabledTimeFn): DisabledTimeConfig {
-  let disabledTimeConfig = disabledTime ? disabledTime(value && value.nativeDate) : ({} as DisabledTimeConfig);
+export function getTimeConfig(value: Date | null, disabledTime?: DisabledTimeFn): DisabledTimeConfig {
+  let disabledTimeConfig = disabledTime?.(value) ?? ({} as DisabledTimeConfig);
   disabledTimeConfig = {
     ...defaultDisabledTime,
     ...disabledTimeConfig
@@ -30,7 +28,7 @@ export function getTimeConfig(value: CandyDate, disabledTime?: DisabledTimeFn): 
   return disabledTimeConfig;
 }
 
-export function isTimeValidByConfig(value: CandyDate, disabledTimeConfig: DisabledTimeConfig): boolean {
+export function isTimeValidByConfig(value: Date, disabledTimeConfig: DisabledTimeConfig): boolean {
   let invalidTime = false;
   if (value) {
     const hour = value.getHours();
@@ -52,18 +50,25 @@ export function isTimeValidByConfig(value: CandyDate, disabledTimeConfig: Disabl
   return !invalidTime;
 }
 
-export function isTimeValid(value: CandyDate, disabledTime: DisabledTimeFn): boolean {
+export function isTimeValid(value: Date, disabledTime: DisabledTimeFn): boolean {
   const disabledTimeConfig = getTimeConfig(value, disabledTime);
   return isTimeValidByConfig(value, disabledTimeConfig);
 }
 
-export function isAllowedDate(value: CandyDate, disabledDate?: DisabledDateFn, disabledTime?: DisabledTimeFn): boolean {
+export function isAllowedDate(
+  value: Date | null,
+  disabledDateArray: Array<DisabledDateFn | undefined> = [],
+  disabledTime?: DisabledTimeFn
+): boolean {
   if (!value) {
     return false;
   }
-  if (disabledDate) {
-    if (disabledDate(value.nativeDate)) {
-      return false;
+
+  if (disabledDateArray?.length > 0) {
+    for (const disabledDate of disabledDateArray) {
+      if (disabledDate && disabledDate(value)) {
+        return false;
+      }
     }
   }
   if (disabledTime) {
@@ -72,4 +77,27 @@ export function isAllowedDate(value: CandyDate, disabledDate?: DisabledDateFn, d
     }
   }
   return true;
+}
+
+export function isSameRange(previous: Array<Date | null>, current: Array<Date | null>): boolean {
+  return current.every((value, index) => {
+    const previousDate = previous[index];
+    return previousDate?.getTime() === value?.getTime();
+  });
+}
+
+export function isSameDate(previous: Date | null, current: Date | null): boolean {
+  return previous?.getTime() === current?.getTime();
+}
+
+export function overrideHms(newValue: Date, oldValue: Date | null): Date {
+  oldValue = oldValue || new Date();
+  const result = oldValue.setHours(newValue.getHours(), newValue.getMinutes(), newValue.getSeconds());
+  return new Date(result);
+}
+
+export function cloneDate<T>(value: T): T;
+export function cloneDate<T>(value: T[]): T[];
+export function cloneDate<T>(value: T[] | T): T[] | T {
+  return Array.isArray(value) ? [...value] : value;
 }

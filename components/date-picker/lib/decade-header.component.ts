@@ -4,6 +4,7 @@
  */
 
 import { ChangeDetectionStrategy, Component, ViewEncapsulation } from '@angular/core';
+import { addYears } from 'date-fns';
 import { AbstractPanelHeader } from './abstract-panel-header';
 import { PanelSelector } from './interface';
 
@@ -19,7 +20,7 @@ export class DecadeHeaderComponent extends AbstractPanelHeader {
   next(): void {}
 
   get startYear(): number {
-    return parseInt(`${this.value.getYear() / 100}`, 10) * 100;
+    return parseInt(`${this.value.getFullYear() / 100}`, 10) * 100;
   }
 
   get endYear(): number {
@@ -27,11 +28,11 @@ export class DecadeHeaderComponent extends AbstractPanelHeader {
   }
 
   superPrevious(): void {
-    this.changeValue(this.value.addYears(-100));
+    this.changeValue(addYears(this.value, -100));
   }
 
   superNext(): void {
-    this.changeValue(this.value.addYears(100));
+    this.changeValue(addYears(this.value, 100));
   }
 
   getSelectors(): PanelSelector[] {

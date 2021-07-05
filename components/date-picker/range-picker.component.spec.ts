@@ -17,9 +17,8 @@ import {
   dispatchMouseEvent,
   typeInElement
 } from 'ng-zorro-antd/core/testing';
-import { CandyDate } from 'ng-zorro-antd/core/time';
 import { NgStyleInterface } from 'ng-zorro-antd/core/types';
-import { RangePartType } from 'ng-zorro-antd/date-picker/standard-types';
+import { RangePart } from 'ng-zorro-antd/date-picker/standard-types';
 import {
   ENTER_EVENT,
   getPickerAbstract,
@@ -386,23 +385,23 @@ describe('NzRangePickerComponent', () => {
       fixture.detectChanges();
       openPickerByClickTrigger();
       // Click previous year button
-      dispatchMouseEvent(getSuperPreBtn('left'), 'click');
+      dispatchMouseEvent(getSuperPreBtn(RangePart.Left), 'click');
       fixture.detectChanges();
-      expect(getHeaderYearBtn('left').textContent!.indexOf('2017') > -1).toBeTruthy();
+      expect(getHeaderYearBtn(RangePart.Left).textContent!.indexOf('2017') > -1).toBeTruthy();
       // Click next year button * 2
-      dispatchMouseEvent(getSuperNextBtn('left'), 'click');
+      dispatchMouseEvent(getSuperNextBtn(RangePart.Left), 'click');
       fixture.detectChanges();
-      dispatchMouseEvent(getSuperNextBtn('left'), 'click');
+      dispatchMouseEvent(getSuperNextBtn(RangePart.Left), 'click');
       fixture.detectChanges();
-      expect(getHeaderYearBtn('left').textContent!.indexOf('2019') > -1).toBeTruthy();
+      expect(getHeaderYearBtn(RangePart.Left).textContent!.indexOf('2019') > -1).toBeTruthy();
       // Click previous month button
-      dispatchMouseEvent(getPreBtn('left'), 'click');
+      dispatchMouseEvent(getPreBtn(RangePart.Left), 'click');
       fixture.detectChanges();
       expect(getHeaderMonthBtn().textContent!.indexOf('5') > -1).toBeTruthy();
       // Click next month button * 2
-      dispatchMouseEvent(getNextBtn('left'), 'click');
+      dispatchMouseEvent(getNextBtn(RangePart.Left), 'click');
       fixture.detectChanges();
-      dispatchMouseEvent(getNextBtn('left'), 'click');
+      dispatchMouseEvent(getNextBtn(RangePart.Left), 'click');
       fixture.detectChanges();
       expect(getHeaderMonthBtn().textContent!.indexOf('7') > -1).toBeTruthy();
     }));
@@ -412,9 +411,9 @@ describe('NzRangePickerComponent', () => {
       fixture.detectChanges();
       openPickerByClickTrigger();
       // Click next year button * 2
-      dispatchMouseEvent(getSuperNextBtn('left'), 'click');
+      dispatchMouseEvent(getSuperNextBtn(RangePart.Left), 'click');
       fixture.detectChanges();
-      dispatchMouseEvent(getSuperNextBtn('left'), 'click');
+      dispatchMouseEvent(getSuperNextBtn(RangePart.Left), 'click');
       fixture.detectChanges();
 
       triggerInputBlur();
@@ -423,7 +422,7 @@ describe('NzRangePickerComponent', () => {
       fixture.detectChanges();
 
       openPickerByClickTrigger();
-      expect(getHeaderYearBtn('left').textContent!.indexOf('2018') > -1).toBeTruthy();
+      expect(getHeaderYearBtn(RangePart.Left).textContent!.indexOf('2018') > -1).toBeTruthy();
     }));
   }); // /panel switch and move forward/afterward
 
@@ -439,7 +438,7 @@ describe('NzRangePickerComponent', () => {
 
     it('should support nzDateRender with typeof function', fakeAsync(() => {
       const featureKey = 'TEST_FIRST_DAY';
-      fixtureInstance.nzDateRender = (d: CandyDate) => (d.getDate() === 1 ? featureKey : d.getDate());
+      fixtureInstance.nzDateRender = (d: Date) => (d.getDate() === 1 ? featureKey : d.getDate());
       fixture.detectChanges();
       openPickerByClickTrigger();
       expect(overlayContainerElement.textContent!.indexOf(featureKey) > -1).toBeTruthy();
@@ -892,9 +891,35 @@ describe('NzRangePickerComponent', () => {
       fixture.detectChanges();
       tick(500);
       fixture.detectChanges();
-      expect(getHeaderYearBtn('left').textContent).toContain('2027');
+      expect(getHeaderYearBtn(RangePart.Left).textContent).toContain('2027');
       // panel month will increase 1
       expect(getHeaderMonthBtn().textContent).toContain('9');
+    }));
+
+    it('should date cell disabled when end date is less than start date', fakeAsync(() => {
+      fixture.detectChanges();
+      openPickerByClickTrigger();
+
+      const leftInput = getPickerInput(fixture.debugElement);
+      typeInElement('2021-06-12', leftInput);
+      fixture.detectChanges();
+      leftInput.dispatchEvent(ENTER_EVENT);
+      fixture.detectChanges();
+      tick(500);
+      fixture.detectChanges();
+      const lastDisabledCell = queryFromOverlay('td.ant-picker-cell-disabled:last-child .ant-picker-cell-inner');
+      expect(lastDisabledCell.textContent!.trim()).toBe('11');
+    }));
+
+    it('should active date changed with focused input date', fakeAsync(() => {
+      fixtureInstance.modelValue = [new Date('2021-06-21'), new Date('2021-12-06')];
+      fixture.detectChanges();
+
+      openPickerByClickTrigger();
+      expect(getHeaderMonthBtn().textContent!.indexOf('6') > -1).toBeTruthy();
+
+      openRightPickerByClickTrigger();
+      expect(getHeaderMonthBtn().textContent!.indexOf('12') > -1).toBeTruthy();
     }));
   }); // /specified date picker testing
 
@@ -986,8 +1011,8 @@ describe('NzRangePickerComponent', () => {
 
   ////////////
 
-  function getCssIndex(part: RangePartType): string {
-    return part === 'left' ? 'first-child' : 'last-child';
+  function getCssIndex(part: RangePart): string {
+    return part === RangePart.Left ? 'first-child' : 'last-child';
   }
 
   function getPickerContainer(): HTMLElement {
@@ -1004,23 +1029,23 @@ describe('NzRangePickerComponent', () => {
     return fixtureDebugElement.queryAll(By.css(`.${PREFIX_CLASS}-input input`))[2].nativeElement as HTMLInputElement;
   }
 
-  function getPreBtn(part: RangePartType): HTMLElement {
+  function getPreBtn(part: RangePart): HTMLElement {
     return queryFromOverlay(`.ant-picker-panel:${getCssIndex(part)} .${PREFIX_CLASS}-header-prev-btn`);
   }
 
-  function getNextBtn(part: RangePartType): HTMLElement {
+  function getNextBtn(part: RangePart): HTMLElement {
     return queryFromOverlay(`.ant-picker-panel:${getCssIndex(part)} .${PREFIX_CLASS}-header-next-btn`);
   }
 
-  function getSuperPreBtn(part: RangePartType): HTMLElement {
+  function getSuperPreBtn(part: RangePart): HTMLElement {
     return queryFromOverlay(`.ant-picker-panel:${getCssIndex(part)} .${PREFIX_CLASS}-header-super-prev-btn`);
   }
 
-  function getSuperNextBtn(part: RangePartType): HTMLElement {
+  function getSuperNextBtn(part: RangePart): HTMLElement {
     return queryFromOverlay(`.ant-picker-panel:${getCssIndex(part)} .${PREFIX_CLASS}-header-super-next-btn`);
   }
 
-  function getHeaderYearBtn(part: RangePartType): HTMLElement {
+  function getHeaderYearBtn(part: RangePart): HTMLElement {
     return queryFromOverlay(`.ant-picker-panel .ant-picker-header-year-btn:${getCssIndex(part)}`);
   }
 
@@ -1159,7 +1184,7 @@ class NzTestRangePickerComponent {
 
   nzRanges: any; // eslint-disable-line @typescript-eslint/no-explicit-any
   nzOnPanelChange(_: string[]): void {}
-  nzOnCalendarChange(): void {}
+  nzOnCalendarChange(_: Array<null | Date>): void {}
   nzOnOk(_: Array<null | Date>): void {}
 
   // --- Suite 2

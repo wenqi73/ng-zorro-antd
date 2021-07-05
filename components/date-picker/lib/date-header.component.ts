@@ -28,13 +28,13 @@ export class DateHeaderComponent extends AbstractPanelHeader {
         className: `${this.prefixCls}-year-btn`,
         title: this.locale.yearSelect,
         onClick: () => this.changeMode('year'),
-        label: this.dateHelper.format(this.value.nativeDate, transCompatFormat(this.locale.yearFormat))
+        label: this.dateHelper.format(this.value, transCompatFormat(this.locale.yearFormat))
       },
       {
         className: `${this.prefixCls}-month-btn`,
         title: this.locale.monthSelect,
         onClick: () => this.changeMode('month'),
-        label: this.dateHelper.format(this.value.nativeDate, this.locale.monthFormat || 'MMM')
+        label: this.dateHelper.format(this.value, this.locale.monthFormat || 'MMM')
       }
     ];
   }

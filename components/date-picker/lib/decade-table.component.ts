@@ -4,6 +4,7 @@
  */
 
 import { ChangeDetectionStrategy, Component, OnChanges, ViewEncapsulation } from '@angular/core';
+import { setYear } from 'date-fns';
 import { AbstractTable } from './abstract-table';
 import { DateBodyRow, DateCell, DecadeCell } from './interface';
 
@@ -20,7 +21,7 @@ const MAX_COL = 3;
 })
 export class DecadeTableComponent extends AbstractTable implements OnChanges {
   get startYear(): number {
-    return parseInt(`${this.activeDate.getYear() / 100}`, 10) * 100;
+    return parseInt(`${this.activeDate.getFullYear() / 100}`, 10) * 100;
   }
 
   get endYear(): number {
@@ -33,7 +34,7 @@ export class DecadeTableComponent extends AbstractTable implements OnChanges {
 
   makeBodyRows(): DateBodyRow[] {
     const decades: DateBodyRow[] = [];
-    const currentYear = this.value && this.value.getYear();
+    const currentYear = (this.value || new Date()).getFullYear();
     const startYear = this.startYear;
     const endYear = this.endYear;
     const previousYear = startYear - 10;
@@ -52,7 +53,7 @@ export class DecadeTableComponent extends AbstractTable implements OnChanges {
 
         const cell: DecadeCell = {
           trackByIndex: colIndex,
-          value: this.activeDate.setYear(start).nativeDate,
+          value: setYear(this.activeDate, start),
           content,
           title: content,
           isDisabled: false,
@@ -85,7 +86,7 @@ export class DecadeTableComponent extends AbstractTable implements OnChanges {
   }
 
   private chooseDecade(year: number): void {
-    this.value = this.activeDate.setYear(year);
+    this.value = setYear(this.activeDate, year);
     this.valueChange.emit(this.value);
   }
 }

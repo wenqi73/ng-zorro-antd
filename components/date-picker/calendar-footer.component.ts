@@ -15,7 +15,6 @@ import {
   ViewEncapsulation
 } from '@angular/core';
 
-import { CandyDate } from 'ng-zorro-antd/core/time';
 import { NzSafeAny } from 'ng-zorro-antd/core/types';
 import { isNonEmptyString, isTemplateRef } from 'ng-zorro-antd/core/util';
 import { DateHelperService, NzCalendarI18nInterface } from 'ng-zorro-antd/i18n';
@@ -78,7 +77,6 @@ export class CalendarFooterComponent implements OnChanges {
   @Input() showToday: boolean = false;
   @Input() showNow: boolean = false;
   @Input() hasTimePicker: boolean = false;
-  @Input() isRange: boolean = false;
 
   @Input() okDisabled: boolean = false;
   @Input() disabledDate?: (d: Date) => boolean;
@@ -86,7 +84,7 @@ export class CalendarFooterComponent implements OnChanges {
   @Input() rangeQuickSelector: TemplateRef<NzSafeAny> | null = null;
 
   @Output() readonly clickOk = new EventEmitter<void>();
-  @Output() readonly clickToday = new EventEmitter<CandyDate>();
+  @Output() readonly clickToday = new EventEmitter<Date>();
 
   prefixCls: string = PREFIX_CLASS;
   isTemplateRef = isTemplateRef;
@@ -109,7 +107,6 @@ export class CalendarFooterComponent implements OnChanges {
   }
 
   onClickToday(): void {
-    const now: CandyDate = new CandyDate();
-    this.clickToday.emit(now.clone()); // To prevent the "now" being modified from outside, we use clone
+    this.clickToday.emit(new Date());
   }
 }

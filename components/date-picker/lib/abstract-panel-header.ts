@@ -4,7 +4,7 @@
  */
 
 import { Directive, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
-import { CandyDate } from 'ng-zorro-antd/core/time';
+import { addMonths, addYears } from 'date-fns';
 import { NzCalendarI18nInterface } from 'ng-zorro-antd/i18n';
 import { NzDateMode } from '../standard-types';
 import { PanelSelector } from './interface';
@@ -15,7 +15,7 @@ export abstract class AbstractPanelHeader implements OnInit, OnChanges {
   prefixCls: string = `ant-picker-header`;
   selectors: PanelSelector[] = [];
 
-  @Input() value!: CandyDate;
+  @Input() value!: Date;
   @Input() locale!: NzCalendarI18nInterface;
   @Input() showSuperPreBtn: boolean = true;
   @Input() showSuperNextBtn: boolean = true;
@@ -23,7 +23,7 @@ export abstract class AbstractPanelHeader implements OnInit, OnChanges {
   @Input() showNextBtn: boolean = true;
 
   @Output() readonly panelModeChange = new EventEmitter<NzDateMode>();
-  @Output() readonly valueChange = new EventEmitter<CandyDate>();
+  @Output() readonly valueChange = new EventEmitter<Date>();
 
   abstract getSelectors(): PanelSelector[];
 
@@ -44,22 +44,22 @@ export abstract class AbstractPanelHeader implements OnInit, OnChanges {
   }
 
   superPrevious(): void {
-    this.changeValue(this.value.addYears(-1));
+    this.changeValue(addYears(this.value, -1));
   }
 
   superNext(): void {
-    this.changeValue(this.value.addYears(1));
+    this.changeValue(addYears(this.value, 1));
   }
 
   previous(): void {
-    this.changeValue(this.value.addMonths(-1));
+    this.changeValue(addMonths(this.value, -1));
   }
 
   next(): void {
-    this.changeValue(this.value.addMonths(1));
+    this.changeValue(addMonths(this.value, 1));
   }
 
-  changeValue(value: CandyDate): void {
+  changeValue(value: Date): void {
     if (this.value !== value) {
       this.value = value;
       this.valueChange.emit(this.value);
@@ -79,7 +79,7 @@ export abstract class AbstractPanelHeader implements OnInit, OnChanges {
 
   ngOnInit(): void {
     if (!this.value) {
-      this.value = new CandyDate(); // Show today by default
+      this.value = new Date(); // Show today by default
     }
     this.selectors = this.getSelectors();
   }

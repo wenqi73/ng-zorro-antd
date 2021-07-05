@@ -28,7 +28,7 @@ export class MonthHeaderComponent extends AbstractPanelHeader {
         className: `${this.prefixCls}-month-btn`,
         title: this.locale.yearSelect,
         onClick: () => this.changeMode('year'),
-        label: this.dateHelper.format(this.value.nativeDate, transCompatFormat(this.locale.yearFormat))
+        label: this.dateHelper.format(this.value, transCompatFormat(this.locale.yearFormat))
       }
     ];
   }
